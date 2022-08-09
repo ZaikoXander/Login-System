@@ -1,0 +1,15 @@
+{
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "quotes": ["error", "double"],
+    "semi": ["error", "never"],
+    "no-extra-semi": "error",
+    "eol-last": ["error", "always"],
+    "no-multiple-empty-lines": ["error", {"max": 2, "maxEOF": 0}],
+    "space-before-function-paren": ["error", {
+      "anonymous": "never",
+      "named": "never",
+      "asyncArrow": "always"
+    }]
+  }
+}
