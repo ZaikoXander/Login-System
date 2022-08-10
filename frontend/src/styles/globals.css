@@ -2,15 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
-body {
-  @apply antialiased p-0 m-0 font-sans;
+* {
+  @apply p-0 m-0 box-border;
+}
+
+html, body, #__next {
+  @apply h-full antialiased font-sans bg-zinc-700 text-zinc-100;
+}
+
+#__next {
+  @apply flex items-center justify-center;
 }
 
 a {
   @apply text-inherit no-underline;
-}
-
-* {
-  @apply box-border;
 }
