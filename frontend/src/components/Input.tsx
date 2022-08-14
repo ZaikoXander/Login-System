@@ -4,7 +4,7 @@ interface InputProps {
   required?: boolean
   type: HTMLInputTypeAttribute
   id?: string
-  placeholder: string
+  placeholder?: string
   className?: string
 }
 
