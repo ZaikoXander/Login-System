@@ -1,25 +1,25 @@
 import { HTMLInputTypeAttribute } from "react"
+import { FieldValues, UseFormRegister } from "react-hook-form"
 
 interface InputProps {
   required?: boolean
   type: HTMLInputTypeAttribute
-  id?: string
+  name?: string
   placeholder?: string
   className?: string
+  register: UseFormRegister<FieldValues>
 }
 
-export default function Input({ required = false, type, id, placeholder, className }: InputProps) {
+export default function Input({ required = false, type, name, placeholder, className, register}: InputProps) {
   return (
     <input
-      required={required}
       type={type}
-      name={id || type}
-      id={id || type}
       placeholder={placeholder}
       className={`
         ${className} rounded py-2 px-4 text-zinc-900
         focus:outline-none
       `}
+      {...register(name || type, { required })}
     />
   )
 }

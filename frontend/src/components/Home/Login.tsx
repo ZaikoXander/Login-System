@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from "react"
 import Link from "next/link"
+import { useForm } from "react-hook-form"
 
 import Input from "../Input"
 import Button from "../Button"
@@ -10,17 +11,35 @@ interface LoginProps {
 }
 
 export default function Login({ isRegistering, setIsRegistering }: LoginProps) {
+  const { register, handleSubmit, formState: { errors } } = useForm()
+
+  function handleSubmitLogin(data: any) {
+    console.log(data)
+  }
+
   function handleRegisterClick() {
     setIsRegistering(!isRegistering)
   }
 
   return (
-    <form className="flex flex-col w-full">
+    <form onSubmit={handleSubmit(handleSubmitLogin)} className="flex flex-col w-full">
       <h1 className="font-bold text-lg mb-1">
         Login
       </h1>
-      <Input required type="email" placeholder="E-mail" className="mb-4" />
-      <Input required type="password" placeholder="Senha" className="mb-2" />
+      <Input
+        required
+        type="email"
+        placeholder="E-mail"
+        className="mb-4"
+        register={register}
+      />
+      <Input
+        required
+        type="password"
+        placeholder="Senha"
+        className="mb-2"
+        register={register}
+      />
       <Link href="/forgot">
         <a
           className="
