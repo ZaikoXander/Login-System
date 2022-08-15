@@ -20,10 +20,7 @@ export default function Home() {
         </title>
       </Head>
       <main>
-        <div className={`
-          bg-zinc-900 w-80 p-4 rounded shadow-md transition-all
-          ${isRegistering ? "h-80" : "h-72"}
-        `}>
+        <div className="bg-zinc-900 w-80 p-4 rounded shadow-md transition-all">
           {
             isRegistering ?
               <Register isRegistering={isRegistering} setIsRegistering={setIsRegistering} />
