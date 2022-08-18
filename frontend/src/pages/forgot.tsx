@@ -28,6 +28,7 @@ export default function Forgot() {
               placeholder="Digite seu e-mail"
               className="mb-4 w-full"
               onChange={event => setEmail(event.target.value)}
+              invalid="Por favor digite um endereço de email válido."
             />
             <Button
               className="mb-2 w-full"

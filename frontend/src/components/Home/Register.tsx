@@ -1,4 +1,5 @@
-import { ChangeEvent, FormEvent, useState } from "react"
+import { ChangeEvent, FormEvent, useRef, useState } from "react"
+import ReCAPTCHA from "react-google-recaptcha"
 
 import Input from "../Input"
 import Button from "../Button"
@@ -9,14 +10,23 @@ interface UserData {
   email: string
   password: string
   confirmPassword: string
+  captcha: string
 }
 
 export default function Register({ isRegistering, setIsRegistering }: HomeComponentsProps) {
-  const [user, setUser] = useState<UserData>({ email: "", password: "", confirmPassword: "" })
+  const [user, setUser] = useState<UserData>({ email: "", password: "", confirmPassword: "", captcha: "" })
 
-  function handleSubmitForm(event: FormEvent<HTMLFormElement>) {
+  const captchaRef = useRef<ReCAPTCHA>(null)
+
+  async function handleSubmitForm(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    console.log(user)
+    const captcha = captchaRef?.current?.getValue()
+    if (captcha) {
+      setUser({ ...user, captcha: captcha })
+    }
+    await console.log(captcha) // send UserData to API
+    captchaRef?.current?.reset()
+    // setIsRegistering(!isRegistering)
   }
 
   function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
@@ -59,6 +69,11 @@ export default function Register({ isRegistering, setIsRegistering }: HomeCompon
         title="A senha deve corresponder a senha digitada anteriormente."
         onChange={handleInputChange}
         invalid="A senha não corresponde."
+      />
+      <ReCAPTCHA
+        ref={captchaRef}
+        sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+        theme="dark"
       />
       <Button
         className="mb-2 mt-3"

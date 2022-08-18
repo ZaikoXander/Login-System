@@ -36,7 +36,6 @@ export default function Login({ isRegistering, setIsRegistering }: HomeComponent
         onChange={handleInputChange}
         invalid="Por favor digite um endereço de email válido."
       />
-
       <Input
         required
         type="password"
@@ -47,7 +46,6 @@ export default function Login({ isRegistering, setIsRegistering }: HomeComponent
         onChange={handleInputChange}
         invalid="Por favor digite uma senha válida."
       />
-
       <Link href="/forgot">
         <a
           className="
