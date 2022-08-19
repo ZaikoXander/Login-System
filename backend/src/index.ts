@@ -1,10 +1,19 @@
 import express from "express"
-import routes from "./routes"
+import cors from "cors"
 import dotenv from "dotenv"
+
+import routes from "./routes"
 
 dotenv.config()
 
 const app = express()
+
+app.use(cors(/* {
+  origin: "https://client-production.com"
+} */))
+
+app.use(express.json())
+app.use(express.urlencoded({extended: false}))
 
 app.use(routes)
 
