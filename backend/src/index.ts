@@ -2,6 +2,7 @@ import express from "express"
 import cors from "cors"
 import dotenv from "dotenv"
 
+import "./database"
 import routes from "./routes"
 
 dotenv.config()
