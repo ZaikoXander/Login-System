@@ -1,9 +1,13 @@
 import { Express } from "express"
-
-import authRoutes from "./auth"
-import profileRoutes from "./profile"
+import fs from "fs"
+import path from "path"
 
 export default (app: Express) => {
-  authRoutes(app)
-  profileRoutes(app)
+  fs
+    .readdirSync(__dirname)
+    .filter(file => ((file.indexOf(".")) !== 0 && (file !== "index.ts") && (file !== "index.js")))
+    .forEach(file => {
+      import(path.resolve(__dirname, file))
+        .then(routes => routes.default(app))
+    })
 }
