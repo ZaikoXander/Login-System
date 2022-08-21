@@ -10,7 +10,7 @@ dotenv.config()
 
 function generateToken(params = {}) {
   return jwt.sign(params, `${process.env.AUTH_SECRET}`, {
-    expiresIn: 86400
+    expiresIn: 86400 // 1 day in seconds
   })
 }
 
@@ -64,7 +64,7 @@ export async function createUser(req: Request, res: Response) {
   }
 }
 
-export async function authenticateUser(req:Request, res: Response) {
+export async function authenticateUser(req: Request, res: Response) {
   try {
     const { email, password } = req.body as UserData
 
@@ -74,7 +74,7 @@ export async function authenticateUser(req:Request, res: Response) {
       return res.status(404).json({ error: "User not found" })
     }
 
-    if (!await bcrypt.compare(password, user.password)) {
+    if (!(await bcrypt.compare(password, user.password))) {
       return res.status(400).json({ error: "Invalid password" })
     }
 
