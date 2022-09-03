@@ -2,11 +2,16 @@ import { Request, Response } from "express"
 import bcrypt from "bcryptjs"
 import axios from "axios"
 import jwt from "jsonwebtoken"
+import crypto from "crypto"
+import xanderEmail from "xander-email"
 import dotenv from "dotenv"
 
 import User from "../models/user"
+import mailer from "../modules/mailer"
 
 dotenv.config()
+
+const viewsPath = "./src/modules/mailer/views"
 
 function generateToken(params = {}) {
   return jwt.sign(params, `${process.env.AUTH_SECRET}`, {
@@ -90,5 +95,43 @@ export async function authenticateUser(req: Request, res: Response) {
 
   } catch (error) {
     res.status(400).json({ error: "Authentication failed" })
+  }
+}
+
+export async function forgotPassword(req: Request, res: Response) {
+  try {
+    const { email } = req.body as UserData
+
+    const user = await User.findOne({ email })
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" })
+    }
+
+    const token = crypto.randomBytes(20).toString("hex")
+
+    const now = new Date()
+    now.setHours(now.getHours() + 1)
+
+    await User.findByIdAndUpdate(user.id, {
+      "$set": {
+        passwordResetToken: token,
+        passwordResetExpires: now
+      }
+    })
+
+    mailer.sendMail({
+      from: "Login System Support <login-system-support@gmail.com>",
+      to: email,
+      subject: "Forgot Password Email",
+      html: xanderEmail("forgot_password", viewsPath, { token })
+    }, (error) => {
+      if (error) {
+        return res.status(400).json({ error: "Cannot send forgot password email" })
+      }
+      return res.send()
+    })
+  } catch (error) {
+    res.status(400).json({ error: "Error on forgot password, try again" })
   }
 }

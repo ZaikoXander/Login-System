@@ -10,6 +10,6 @@ routes.use(authMiddleware)
 
 // profile routes
 
-routes.get("/profile", getProfile)
+routes.get("/", getProfile)
 
-export default (app: Express) => app.use(routes)
+export default (app: Express) => app.use("/profiles", routes)

@@ -1,6 +1,6 @@
 import { Router, Express } from "express"
 
-import { authenticateUser, createUser } from "../controllers/auth"
+import { createUser, authenticateUser, forgotPassword } from "../controllers/auth"
 
 const routes = Router()
 
@@ -10,4 +10,6 @@ routes.post("/register", createUser)
 
 routes.post("/authenticate", authenticateUser)
 
-export default (app: Express) => app.use(routes)
+routes.post("/forgot_password", forgotPassword)
+
+export default (app: Express) => app.use("/auth", routes)
