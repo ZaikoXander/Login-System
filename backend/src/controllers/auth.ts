@@ -24,6 +24,7 @@ interface UserData {
   password: string
   confirmPassword: string
   captcha: string
+  token: string
 }
 
 export async function createUser(req: Request, res: Response) {
@@ -133,5 +134,35 @@ export async function forgotPassword(req: Request, res: Response) {
     })
   } catch (error) {
     res.status(400).json({ error: "Error on forgot password, try again" })
+  }
+}
+
+export async function resetPassword(req: Request, res: Response) {
+  try {
+    const { email, token, password } = req.body as UserData
+    
+    const user = await User.findOne({ email }).select("+passwordResetToken passwordResetExpires")
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" })
+    }
+
+    if (token !== user.passwordResetToken) {
+      return res.status(400).json({ error: "Invalid token" })
+    }
+
+    const now = new Date()
+
+    if (now > /*<Date> <unknown>*/ (user.passwordResetExpires as Date)) {
+      return res.status(400).json({ error: "Expired token, generate a new one" })
+    }
+
+    user.password = password
+
+    await user.save()
+
+    res.send()
+  } catch (error) {
+    res.status(400).json({ error: "Error on reset password, try again" })
   }
 }
