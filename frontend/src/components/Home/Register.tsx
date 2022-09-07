@@ -1,16 +1,29 @@
 import { ChangeEvent, FormEvent, useRef, useState } from "react"
 import ReCAPTCHA from "react-google-recaptcha"
+import Router from "next/router"
+import { setCookie } from "nookies"
+
+import { api } from "../../libs/api"
 
 import Input from "../Input"
 import Button from "../Button"
 
-import { HomeComponentsProps } from "."
+import { HomeComponentsProps } from "./Interfaces"
 
 interface UserData {
   email: string
   password: string
   confirmPassword: string
   captcha: string
+}
+
+interface ApiResponse {
+  user: {
+    email: string
+    id: string
+    createdAt: Date
+  }
+  token: string
 }
 
 export default function Register({ isRegistering, setIsRegistering }: HomeComponentsProps) {
@@ -20,13 +33,29 @@ export default function Register({ isRegistering, setIsRegistering }: HomeCompon
 
   async function handleSubmitForm(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    
     const captcha = captchaRef?.current?.getValue()
-    if (captcha) {
-      setUser({ ...user, captcha: captcha })
+    
+    if (!captcha) {
+      return
     }
-    await console.log(captcha) // send UserData to API
+
+    setUser({ ...user, captcha: captcha })
+
+    const res = await api.post<ApiResponse>("/auth/register", {
+      email: user.email,
+      password: user.password,
+      confirmPassword: user.confirmPassword,
+      captcha: user.captcha
+    })
+
+    const token = res.data.token
+
     captchaRef?.current?.reset()
-    // setIsRegistering(!isRegistering)
+
+    setCookie(null, "token", token)
+
+    Router.push("/profile")
   }
 
   function handleInputChange(event: ChangeEvent<HTMLInputElement>) {

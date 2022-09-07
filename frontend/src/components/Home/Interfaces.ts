@@ -1,10 +1,6 @@
+import { Dispatch, SetStateAction } from "react"
+
 export interface HomeComponentsProps {
   isRegistering: boolean
   setIsRegistering: Dispatch<SetStateAction<boolean>>
 }
-
-const Interfaces = {
-  HomeComponentsProps
-}
-
-export default Interfaces

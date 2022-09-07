@@ -1,22 +1,46 @@
 import { ChangeEvent, FormEvent, useState } from "react"
 import Link from "next/link"
+import Router from "next/router"
+import { setCookie } from "nookies"
+
+import { api } from "../../libs/api"
 
 import Input from "../Input"
 import Button from "../Button"
 
-import { HomeComponentsProps } from "."
+import { HomeComponentsProps } from "./Interfaces"
 
 interface UserData {
   email: string
   password: string
 }
 
+interface ApiResponse {
+  user: {
+    email: string
+    id: string
+    createdAt: Date
+    v: number
+  }
+  token: string
+}
+
 export default function Login({ isRegistering, setIsRegistering }: HomeComponentsProps) {
   const [user, setUser] = useState<UserData>({ email: "", password: "" })
 
-  function handleSubmitForm(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmitForm(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    console.log(user)
+    
+    const res = await api.post<ApiResponse>("/auth/authenticate", {
+      email: user.email,
+      password: user.password
+    })
+
+    const token = res.data.token
+
+    setCookie(null, "token", token)
+
+    Router.push("/profile")
   }
 
   function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
